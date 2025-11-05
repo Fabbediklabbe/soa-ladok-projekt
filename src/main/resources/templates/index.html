@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Registrera studieresultat</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 880px; margin: 2rem auto; padding: 0 1rem; }
+    fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    label { display:block; margin:.5rem 0 .25rem; }
+    input, select, button { padding:.5rem .6rem; }
+    .row { display:flex; gap:1rem; flex-wrap:wrap; }
+    .row > * { flex:1 1 240px; }
+    .ok { color: #0a7a0a; }
+    .err { color: #b00020; }
+  </style>
+</head>
+
+<body>
+  <h1>Registrera studieresultat</h1>
+
+  <fieldset>
+    <legend>1) Kurs & moduler</legend>
+    <div class="row">
+      <div>
+        <label for="kurskod">Kurskod</label>
+        <input id="kurskod" placeholder="t.ex. D0031N" required />
+      </div>
+      <div style="align-self:end">
+        <button id="btnModuler">Hämta moduler</button>
+      </div>
+      <div>
+        <label for="modul">Modul</label>
+        <select id="modul"></select>
+      </div>
+    </div>
+    <div id="modulMsg"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2) Student</legend>
+    <div class="row">
+      <div>
+        <label for="anv">Användarnamn</label>
+        <input id="anv" placeholder="t.ex. sveedz-4" required />
+      </div>
+      <div style="align-self:end">
+        <button id="btnPersnr">Hämta personnummer</button>
+      </div>
+      <div>
+        <label for="pnr">Personnummer</label>
+        <input id="pnr" readonly />
+      </div>
+    </div>
+    <div id="pnrMsg"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>3) Resultat</legend>
+    <div class="row">
+      <div>
+        <label for="datum">Datum</label>
+        <input id="datum" type="date" required />
+      </div>
+      <div>
+        <label for="betyg">Betyg</label>
+        <select id="betyg">
+          <option>G</option>
+          <option>U</option>
+          <option>A</option>
+          <option>B</option>
+          <option>C</option>
+          <option>D</option>
+          <option>E</option>
+          <option>F</option>
+        </select>
+      </div>
+      <div style="align-self:end">
+        <button id="btnRegistrera">Registrera i Ladok</button>
+      </div>
+    </div>
+    <div id="ladokMsg"></div>
+  </fieldset>
+
+  <p>Tip: <a href="/swagger-ui.html" target="_blank" rel="noreferrer">Öppna Swagger</a> för att se samma endpoints.</p>
+
+  <script>
+    const q = id => document.getElementById(id);
+    const setMsg = (id, text, ok = true) => q(id).innerHTML = text ? `<span class="${ok?'ok':'err'}">${text}</span>` : '';
+
+    q('btnModuler').addEventListener('click', async () => {
+      setMsg('modulMsg','');
+      const kurskod = q('kurskod').value.trim();
+      if(!kurskod){ setMsg('modulMsg','Ange kurskod', false); return; }
+      q('modul').innerHTML = '';
+      try {
+        const res = await fetch(`/epok/modul/${encodeURIComponent(kurskod)}`);
+        if(!res.ok) throw new Error('Kunde inte hämta moduler');
+        const data = await res.json(); // ["0005 Inlämningsuppgift", ...]
+        if(!Array.isArray(data) || data.length===0){ setMsg('modulMsg', 'Inga moduler hittades', false); return; }
+        data.forEach(row => {
+          const [kod,...rest] = row.split(' ');
+          const namn = rest.join(' ');
+          const opt = document.createElement('option');
+          opt.value = kod;
+          opt.textContent = `${kod} ${namn}`;
+          q('modul').appendChild(opt);
+        });
+        setMsg('modulMsg', `Hämtade ${data.length} modul(er) för ${kurskod}`);
+      } catch(e){
+        setMsg('modulMsg', e.message, false);
+      }
+    });
+
+    q('btnPersnr').addEventListener('click', async () => {
+        setMsg('pnrMsg','');
+        const anv = q('anv').value.trim();
+        if(!anv){ setMsg('pnrMsg','Ange användarnamn', false); return; }
+        try {
+            const res = await fetch(`/studentits/personnummer/${encodeURIComponent(anv)}`);
+            if(res.status===404){ q('pnr').value = ''; setMsg('pnrMsg','Hittade inget personnummer för angivet användarnamn', false); return; }
+            if(!res.ok) throw new Error('Fel vid hämtning av personnummer');
+            const data = await res.json();                 // ⬅️ JSON nu
+            q('pnr').value = (data.personnummer || '').trim();
+            setMsg('pnrMsg', 'Personnummer hämtat');
+        } catch(e){
+            setMsg('pnrMsg', e.message, false);
+        }
+    });
+
+    q('btnRegistrera').addEventListener('click', async () => {
+      setMsg('ladokMsg','');
+      const payload = {
+        personnummer: q('pnr').value.trim(),
+        kurskod: q('kurskod').value.trim(),
+        modul: q('modul').value.trim(),
+        datum: q('datum').value,
+        betyg: q('betyg').value
+      };
+      if(!payload.personnummer || !payload.kurskod || !payload.modul || !payload.datum || !payload.betyg){
+        setMsg('ladokMsg','Fyll i alla fält och hämta personnummer först', false);
+        return;
+      }
+      try {
+        const res = await fetch('/ladok/resultat', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json(); // {status,message}
+        if(!res.ok || data.status === 'hinder'){
+          setMsg('ladokMsg', data.message || 'Registrering misslyckades', false);
+        } else {
+          setMsg('ladokMsg', 'Registrerad ✅');
+        }
+      } catch(e){
+        setMsg('ladokMsg', e.message, false);
+      }
+    });
+  </script>
+</body>
+</html>
