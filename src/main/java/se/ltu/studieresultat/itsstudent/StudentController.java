@@ -1,13 +1,13 @@
-package se.ltu.studieresultat.studentits;
+package se.ltu.studieresultat.itsstudent;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.ltu.studieresultat.common.dto.PersonnummerResponse;
+import se.ltu.studieresultat.common.apimodels.PersonnummerResponse;
 
 @RestController
-@RequestMapping("/studentits")
+@RequestMapping("/itsstudent")
 @RequiredArgsConstructor
 public class StudentController {
 

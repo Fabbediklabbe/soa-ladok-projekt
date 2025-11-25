@@ -1,4 +1,4 @@
-package se.ltu.studieresultat.studentits;
+package se.ltu.studieresultat.itsstudent;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

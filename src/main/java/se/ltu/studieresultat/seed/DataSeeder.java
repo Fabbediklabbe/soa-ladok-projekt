@@ -5,8 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import se.ltu.studieresultat.epok.ModuleEntity;
 import se.ltu.studieresultat.epok.ModuleRepository;
-import se.ltu.studieresultat.studentits.StudentEntity;
-import se.ltu.studieresultat.studentits.StudentRepository;
+import se.ltu.studieresultat.itsstudent.StudentEntity;
+import se.ltu.studieresultat.itsstudent.StudentRepository;
 
 @Component
 @RequiredArgsConstructor

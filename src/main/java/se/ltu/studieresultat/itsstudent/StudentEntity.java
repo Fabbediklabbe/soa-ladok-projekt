@@ -1,4 +1,4 @@
-package se.ltu.studieresultat.studentits;
+package se.ltu.studieresultat.itsstudent;
 
 import jakarta.persistence.*;
 import lombok.*;

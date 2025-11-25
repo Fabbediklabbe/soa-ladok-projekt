@@ -83,8 +83,9 @@
     <div id="ladokMsg"></div>
   </fieldset>
 
-  <p>Tip: <a href="/swagger-ui.html" target="_blank" rel="noreferrer">Öppna Swagger</a> för att se samma endpoints.</p>
-  <p>Tip: <a href="/h2" target="_blank" rel="noreferrer">Öppna H2 Databasen</a></p>
+  <a href="/swagger-ui.html" target="_blank" rel="noreferrer">Öppna Swagger</a><br>
+  <a href="/h2" target="_blank" rel="noreferrer">Öppna H2 Databasen</a><br>
+  <p>JDBC URL: jdbc:h2:mem:studieresultat <br>User Name: sa <br>Password: (lämna tomt)</p>
 
   <script>
     const q = id => document.getElementById(id);
@@ -119,10 +120,10 @@
         const anv = q('anv').value.trim();
         if(!anv){ setMsg('pnrMsg','Ange användarnamn', false); return; }
         try {
-            const res = await fetch(`/studentits/personnummer/${encodeURIComponent(anv)}`);
+            const res = await fetch(`/itsstudent/personnummer/${encodeURIComponent(anv)}`);
             if(res.status===404){ q('pnr').value = ''; setMsg('pnrMsg','Hittade inget personnummer för angivet användarnamn', false); return; }
             if(!res.ok) throw new Error('Fel vid hämtning av personnummer');
-            const data = await res.json();                 // ⬅️ JSON nu
+            const data = await res.json();                 
             q('pnr').value = (data.personnummer || '').trim();
             setMsg('pnrMsg', 'Personnummer hämtat');
         } catch(e){
@@ -153,7 +154,7 @@
         if(!res.ok || data.status === 'hinder'){
           setMsg('ladokMsg', data.message || 'Registrering misslyckades', false);
         } else {
-          setMsg('ladokMsg', 'Registrerad ✅');
+          setMsg('ladokMsg', 'Registrerad');
         }
       } catch(e){
         setMsg('ladokMsg', e.message, false);

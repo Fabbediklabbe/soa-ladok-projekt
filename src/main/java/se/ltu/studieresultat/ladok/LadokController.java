@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.ltu.studieresultat.common.dto.ResultRegistrationRequest;
-import se.ltu.studieresultat.common.dto.StatusResponse;
+import se.ltu.studieresultat.common.apimodels.ResultRegistrationRequest;
+import se.ltu.studieresultat.common.apimodels.StatusResponse;
 
 @RestController
 @RequestMapping("/ladok")

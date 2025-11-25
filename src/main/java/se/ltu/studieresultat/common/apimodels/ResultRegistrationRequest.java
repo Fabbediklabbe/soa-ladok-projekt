@@ -1,4 +1,4 @@
-package se.ltu.studieresultat.common.dto;
+package se.ltu.studieresultat.common.apimodels;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
