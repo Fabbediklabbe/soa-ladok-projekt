@@ -40,14 +40,16 @@ Alla delar körs i **ett och samma Spring Boot-projekt**, men simulerar separata
 
 ### 1. Klona projektet
 ```bash
-git clone https://github.com/<DITT_REPO_HÄR>.git
+git clone https://github.com/Fabbediklabbe/soa-ladok-projekt.git
 cd studieresultat
 ```
 
 ### 2. Bygg och starta
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
+
+### Applikationen körs nu på "lokalhost:8080"
 
 ### 3. Öppna Swagger (API-gränssnitt)
 ```bash
