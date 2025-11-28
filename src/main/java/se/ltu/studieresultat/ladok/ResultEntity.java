@@ -10,7 +10,7 @@ public class ResultEntity {
   String personnummer;
   String kurskod;
   String modul;
-  String datum; // ISO string för prototyp
+  String datum;
   String betyg;
-  String status; // "registrerad" / "hinder"
+  String status;
 }

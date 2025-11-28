@@ -28,7 +28,6 @@ public class DataSeeder implements CommandLineRunner {
     modRepo.save(new ModuleEntity(null, "D0005N", "0005", "Inlämningsuppgift", true));
     modRepo.save(new ModuleEntity(null, "D0005N", "0006", "Tentamen", true));
 
-
     // Studenter
     stuRepo.save(new StudentEntity(null, "fabnys-3", "20020921-4321"));
     stuRepo.save(new StudentEntity(null, "axevik-3", "19992912-1234"));

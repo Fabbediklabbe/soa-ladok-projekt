@@ -9,7 +9,7 @@ q('btnModuler').addEventListener('click', async () => {
     try {
         const res = await fetch(`/epok/modul/${encodeURIComponent(kurskod)}`);
         if (!res.ok) throw new Error('Kunde inte hämta moduler');
-        const data = await res.json(); // ["0005 Inlämningsuppgift", ...]
+        const data = await res.json();
         if (!Array.isArray(data) || data.length === 0) { setMsg('modulMsg', 'Inga moduler hittades', false); return; }
         data.forEach(row => {
             const [kod, ...rest] = row.split(' ');
@@ -60,7 +60,7 @@ q('btnRegistrera').addEventListener('click', async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        const data = await res.json(); // {status,message}
+        const data = await res.json();
         if (!res.ok || data.status === 'hinder') {
             setMsg('ladokMsg', data.message || 'Registrering misslyckades', false);
         } else {

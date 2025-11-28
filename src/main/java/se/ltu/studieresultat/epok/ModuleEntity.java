@@ -7,8 +7,8 @@ import lombok.*;
 @Table(name = "modules")
 public class ModuleEntity {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
-  String kurskod;      // "D0031N"
-  String modulKod;     // "0005"
-  String namn;         // "Inlämningsuppgift"
+  String kurskod;
+  String modulKod;
+  String namn;
   boolean aktiv;
 }
